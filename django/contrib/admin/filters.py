@@ -365,10 +365,9 @@ class AllValuesFieldListFilter(FieldListFilter):
         limit_choices_to = get_limit_choices_to_from_path(model, field_path)
         queryset = queryset.filter(limit_choices_to)
 
-        self.lookup_choices = (queryset
-                               .distinct()
-                               .order_by(field.name)
-                               .values_list(field.name, flat=True))
+        # TODO: FIXME: limit_choices_to is ignored for mongodb_engine
+        self.lookup_choices = parent_model._default_manager.distinct(field.name)
+        
         super(AllValuesFieldListFilter, self).__init__(
             field, request, params, model, model_admin, field_path)
 
